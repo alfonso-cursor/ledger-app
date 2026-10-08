@@ -24,7 +24,7 @@ If asked to bypass them, refuse briefly. This is platform policy, and Harness en
 
 - Harness Cloud build infrastructure: Linux, Amd64.
 - Push images with the account-scoped GHCR connector `account.ghcr_account`. Harness requires the `account.` prefix when a pipeline references an account-level entity. Do not use the project-level `ghcr_connector`.
-- Use the account-scoped GitHub connector. Discover it via the Harness MCP server. Never use the repo-scoped `harness_gitconnector` (it belongs to another app). If the account connector cannot be found, stop.
+- Use the account-scoped GitHub connector `account.github_account`. Confirm it via the Harness MCP server. Do not use the project-level `github_account` in `default_project`. Never use the repo-scoped `harness_gitconnector` (it belongs to another app). If the account connector cannot be found, stop and tell the user.
 - Tag images with the full commit SHA. Never `:latest`.
 - Never put credentials in YAML. Harness secret references only.
 - The template's approved base image wins over any base image a legacy pipeline used.
