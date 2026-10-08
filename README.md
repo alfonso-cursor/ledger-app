@@ -38,7 +38,34 @@ Open `http://localhost:5173`. The dev server proxies `/api` to the backend on po
 ```bash
 cd backend
 source .venv/bin/activate
+pip install -r requirements.txt
 pytest
+```
+
+`requirements.txt` includes the runtime packages plus pytest. The image installs `requirements-prod.txt` only.
+
+## Run with Docker
+
+Docker Compose builds both images and runs them together. The web container proxies `/api` to the `backend` service, which is the same path the UI already uses.
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:8080`. The API is also published at `http://localhost:8000`. SQLite data is stored in the `ledger-data` volume.
+
+Build the images on their own:
+
+```bash
+docker build -t ledger-app-backend backend
+docker build -t ledger-app-frontend frontend
+```
+
+Each Dockerfile takes a `BASE_IMAGE` build arg so a pipeline can inject an approved base image:
+
+```bash
+docker build --build-arg BASE_IMAGE=python:3.12-slim-bookworm -t ledger-app-backend backend
+docker build --build-arg BASE_IMAGE=nginx:1.27-alpine -t ledger-app-frontend frontend
 ```
 
 ## API

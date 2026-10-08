@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: ledger-app-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ledger-data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+    image: ledger-app-frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  ledger-data:
