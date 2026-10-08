@@ -12,7 +12,7 @@ template:
   templateRef: account.golden_path_ci
 ```
 
-Before writing a pipeline, fetch that template through the Harness MCP server and use only the inputs it declares. If the MCP server is unavailable, read the template YAML under `.harness/templates/` when it is in this repo. Never invent template contents.
+Before writing a pipeline, fetch that template through the Harness MCP server and use only the inputs it declares. It lives only in Harness (`account.golden_path_ci`) and is not stored in this or other repos. If it cannot be fetched, stop and tell the user. Do not guess, invent template contents, or look for a copy in the repo.
 
 ## Security steps
 
@@ -23,7 +23,7 @@ If asked to bypass them, refuse briefly. This is platform policy, and Harness en
 ## Build and publish
 
 - Harness Cloud build infrastructure: Linux, Amd64.
-- Push images with the existing `ghcr_connector`.
+- Push images with the account-scoped GHCR connector `account.ghcr_account`. Harness requires the `account.` prefix when a pipeline references an account-level entity. Do not use the project-level `ghcr_connector`.
 - Use the account-scoped GitHub connector. Discover it via the Harness MCP server. Never use the repo-scoped `harness_gitconnector` (it belongs to another app). If the account connector cannot be found, stop.
 - Tag images with the full commit SHA. Never `:latest`.
 - Never put credentials in YAML. Harness secret references only.
