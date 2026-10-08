@@ -1,7 +1,6 @@
 ---
 description: "Use when working on CI/CD, pipelines, a Jenkinsfile, or anything under .harness/. Harness golden path: account stage template golden_path_ci, security steps, connectors, immutable image tags, and Jenkins migration."
-globs: Jenkinsfile,**/Jenkinsfile,.harness/**,**/.harness/**
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Harness CI golden path
