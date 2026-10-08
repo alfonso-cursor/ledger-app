@@ -52,6 +52,10 @@ pytest
 
 Amounts are decimal strings with two places (for example `"12.50"`) and are stored as integer cents.
 
+## Contributing
+
+Pipeline work follows `.cursor/rules/harness-golden-path.mdc`.
+
 ## Out of scope
 
 Budgets, receipts, multiple users, bank sync, and charts beyond the monthly total.
