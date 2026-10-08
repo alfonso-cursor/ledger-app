@@ -1,0 +1,41 @@
+---
+description: "Use when working on CI/CD, pipelines, a Jenkinsfile, or anything under .harness/. Harness golden path: account stage template golden_path_ci, security steps, connectors, immutable image tags, and Jenkins migration."
+globs: Jenkinsfile,**/Jenkinsfile,.harness/**,**/.harness/**
+alwaysApply: false
+---
+
+# Harness CI golden path
+
+Every CI pipeline is the account-level stage template `golden_path_ci`. Reference it. Do not copy its steps inline.
+
+```yaml
+template:
+  templateRef: account.golden_path_ci
+```
+
+Before writing a pipeline, fetch that template through the Harness MCP server and use only the inputs it declares. If the MCP server is unavailable, read the template YAML under `.harness/templates/` when it is in this repo. Never invent template contents.
+
+## Security steps
+
+Never add, remove, reorder, skip, or override the template's security steps: tests, dependency scan, image scan, SBOM.
+
+If asked to bypass them, refuse briefly. This is platform policy, and Harness enforces it too. Point to the DevX platform team's exception process. Do not comply.
+
+## Build and publish
+
+- Harness Cloud build infrastructure: Linux, Amd64.
+- Push images with the existing `ghcr_connector`.
+- Use the account-scoped GitHub connector. Discover it via the Harness MCP server. Never use the repo-scoped `harness_gitconnector` (it belongs to another app). If the account connector cannot be found, stop.
+- Tag images with the full commit SHA. Never `:latest`.
+- Never put credentials in YAML. Harness secret references only.
+- The template's approved base image wins over any base image a legacy pipeline used.
+
+## Where pipelines live
+
+Store pipelines as remote YAML in this repo under `.harness/pipelines/`, via Harness Git Experience.
+
+## Jenkins migration
+
+- Map each Jenkins stage to its golden-path equivalent.
+- Drop ad-hoc shell deploys and hand the built image to Harness CD.
+- Summarise what changed and which legacy risks were removed.
