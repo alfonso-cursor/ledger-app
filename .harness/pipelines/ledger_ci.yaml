@@ -1,0 +1,76 @@
+pipeline:
+  name: Ledger CI
+  identifier: ledger_ci
+  orgIdentifier: default
+  projectIdentifier: default_project
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.github_account
+        repoName: ledger-app
+        build:
+          type: branch
+          spec:
+            branch: <+trigger.branch>
+  stages:
+    - parallel:
+        - stage:
+            name: Backend
+            identifier: backend
+            template:
+              templateRef: account.golden_path_ci
+              versionLabel: v1
+              templateInputs:
+                type: CI
+                variables:
+                  - name: service_context
+                    type: String
+                    value: backend
+                  - name: dockerfile_path
+                    type: String
+                    value: backend/Dockerfile
+                  - name: image_name
+                    type: String
+                    value: ledger-app-backend
+                  - name: test_command
+                    type: String
+                    value: cd backend && python -m pip install --upgrade pip && pip install -r requirements.txt && pytest
+                  - name: runtime_flavor
+                    type: String
+                    value: python
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: MarkAsFailure
+        - stage:
+            name: Frontend
+            identifier: frontend
+            template:
+              templateRef: account.golden_path_ci
+              versionLabel: v1
+              templateInputs:
+                type: CI
+                variables:
+                  - name: service_context
+                    type: String
+                    value: frontend
+                  - name: dockerfile_path
+                    type: String
+                    value: frontend/Dockerfile
+                  - name: image_name
+                    type: String
+                    value: ledger-app-frontend
+                  - name: test_command
+                    type: String
+                    value: cd frontend && npm ci && npm run build
+                  - name: runtime_flavor
+                    type: String
+                    value: nginx
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: MarkAsFailure
